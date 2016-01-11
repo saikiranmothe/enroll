@@ -16,7 +16,7 @@ describe Forms::GeneralAgencyProfile, "given nothing" do
   end
 end
 
-describe Forms::BrokerAgencyProfile, ".save" do
+describe Forms::BrokerAgencyProfile, ".save", :dbclean => :after_each do
   let(:general_agency_profile) { FactoryGirl.create(:general_agency_profile) }
 
   let(:attributes) { {
@@ -128,6 +128,10 @@ describe Forms::BrokerAgencyProfile, ".save" do
       subject.save
     end
 
+    after(:all) do
+      DatabaseCleaner.clean
+    end
+
     it 'should build general agency from existing record and set person as primary' do
       person = Person.where(first_name: "joseph", last_name: "smith", dob: "10/10/1974").first
       expect(subject.person).to eq(person)
@@ -183,7 +187,7 @@ describe Forms::BrokerAgencyProfile, ".save" do
 end
 
 
-describe Forms::GeneralAgencyProfile, ".match_or_create_person" do
+describe Forms::GeneralAgencyProfile, ".match_or_create_person", :dbclean => :after_each do
   let(:attributes) { {
     first_name: "steve",
     last_name: "smith",
@@ -224,6 +228,10 @@ describe Forms::GeneralAgencyProfile, ".match_or_create_person" do
   context 'when person with same information already present in the system' do
     let(:other_attributes) { {first_name: "larry"}}
 
+    after(:all) do
+      DatabaseCleaner.clean
+    end
+
      before :each do
       FactoryGirl.create(:person, first_name: "larry", last_name: "smith", dob: "10/10/1974")
       subject.match_or_create_person
@@ -262,7 +270,7 @@ describe Forms::GeneralAgencyProfile, ".match_or_create_person" do
   end
 end
 
-describe Forms::GeneralAgencyProfile, ".find" do
+describe Forms::GeneralAgencyProfile, ".find", dbclean: :after_each do
   let(:general_agency_profile) { FactoryGirl.create(:general_agency_profile) }
   let(:organization) { general_agency_profile.organization }
 

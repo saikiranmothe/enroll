@@ -1,52 +1,87 @@
-
-$primary-blue: #007bc4;
-$primary-green: #69A30D;
-$primay-active-button-text-color: #ffffff;
-$primary-bold: 600;
-
+@import "variables";
 .module {
+  &.consumer-broker-widget, &.employee-broker-widget {
+    .panel-heading {
+      background-image: none;
+      background-color: transparent;
+      .panel-title {
+        color: $primary-blue;
+      }
+    }
+    .panel-body {
+      display: table;
+      width: 100%;
+      > * {
+        display: table-cell;
+        vertical-align: middle;
+        &.text-center {
+          width: 25%;
+        }
+        &.text-left {
+          padding-left: 7.5%;
+          .broker-information {
+            word-break: break-all;
+          }
+        }
+      }
+    }
+  }
+  &.inbox {
+    .fa {
+      color: $primary-blue;
+    }
+  }
   &#qle-details {
     .error-info {
       margin-top: 0;
     }
   }
+  &.shop-for-plans-widget {
+    a {
+      width: 100%;
+      margin-bottom: 2.5%;
+      &.btn {
+        padding: 6px 0;
+      }
+    }
+  }
 }
 .brokers-widget {
-  .col-xs-8 {
-    padding-top: 10px;
     h4 {
       padding: 15px 0 0 0;
       margin: 0;
       font-weight: 600;
     }
-  }
 
   h4, .fa {
-    color: #007bc4;
+    color: $primary-blue;
   }
 
-  .col-xs-4 {
-    cursor: pointer;
-    &:hover {
-      * {
-        color: #23527c;
+    .col-xs-4 {
+      cursor: pointer;
+      &:hover {
+        * {
+          color: #23527c;
+        }
       }
-    }
-    h2 {
-      margin-bottom: 0;
-      margin-top: 25px;
-      img {
-        width: 85%;
+      h2 {
+        margin-bottom: 0;
+        margin-top: 25px;
+        img {
+          width: 85%;
+        }
+      }
+      span {
+        color: #007bc4;
       }
     }
     span {
-      color: #007bc4;
+      color: $primary-blue;
     }
-  }
 }
 .help-signup {
   h4 {
-    color: #007bc4;
+    color: $primary-blue;
     margin-bottom: 0;
     font-weight: 600;
     &+small {
@@ -68,7 +103,7 @@ $primary-bold: 600;
   }
   i {
     text-align: center;
-    color: #007bc4;
+    color: $primary-blue;
     display: block;
   }
   .fa-phone {
@@ -85,7 +120,7 @@ $primary-bold: 600;
   padding-top: 4.45%;
 }
 .fa-icon-link, .fa-icon-label, a {
-  color: #007bc4;
+  color: $primary-blue;
   cursor: pointer;
   &:hover {
     color: #23527c;
@@ -99,7 +134,7 @@ $primary-bold: 600;
 
   .benefits-tab, .home-tab, .hbx-enrollment-panel {
     .fa {
-      color: #007bc4;
+      color: $primary-blue;
       margin: 0 10px 0 5px;
       &.published, &.enrolling {
         color: #FFD700;
@@ -126,40 +161,8 @@ $primary-bold: 600;
     .alert {
       padding: 15px 40px 15px 15px;
     }
-    .btn-primary {
-      text-transform: uppercase;
-      padding: 10px 20px;
-      border-radius: 6px;
-      font-size: 16px;
-      letter-spacing: 1px;
-      border-top: none;
-      border-left: none;
-      border-right: none;
-      margin-top: 5px;
-      &.mtz {
-        margin-top: 0;
-      }
-    }
-    .btn.pull-right {
-      width: 100%;
-      max-width: 75%;
-    }
         .bg-title {
           font-weight: bold;
-        }
-        .panel-body {
-          .col-xs-12 {
-            padding-top: 15px;
-            &.btn-stack {
-              padding-top: 0;
-              a {
-                margin-top: 0;
-              }
-            }
-            &.btn-stack:last-of-type {
-              padding-top: 5px;
-            }
-          }
         }
         .panel-body {
           h4 {
@@ -169,6 +172,14 @@ $primary-bold: 600;
           }
           .info p {
             margin: 0;
+          }
+        }
+        &.waived-coverage {
+          .status {
+            color: $primary-gray;
+          }
+          table {
+            width: 100%;
           }
         }
   }
@@ -366,7 +377,7 @@ $primary-bold: 600;
                 width: 100%;
                 .button {
                   overflow: hidden;
-                  width:62.5%;
+                  width:74%;
                   position:relative;
                 }
                 input[type=submit] {
@@ -393,9 +404,6 @@ $primary-bold: 600;
 								border-radius: 5px;
 								max-width: 140px;
 								width: 140px;
-							}
-							.btn-trans {
-								background-color: transparent;
 							}
 						}
             &.table-functions {

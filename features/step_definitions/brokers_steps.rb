@@ -65,7 +65,7 @@ Then(/^.+ should see the broker successfully approved message$/) do
 end
 
 And(/^.+ should receive an invitation email$/) do
-  open_email("ricky.martin@example.com")
+  open_email("ricky.martin@example.com", :with_subject => "Invitation to create your Broker account on #{Settings.site.short_name} ")
   expect(current_email.to).to eq(["ricky.martin@example.com"])
   #current_email.should have_subject("Invitation from your Employer to Sign up for Health Insurance at #{Settings.site.short_name} ")
 end
@@ -112,7 +112,7 @@ end
 Then(/^.+ should see broker agencies index view$/) do
   #TODO add AJAX handling
   wait_for_ajax(3)
-  expect(page).to have_content('Broker Agencies')
+  expect(page).to have_content('Broker Agencies', :wait => 5)
 end
 
 When(/^.+ searches broker agency by name$/) do
@@ -147,7 +147,7 @@ end
 
 And (/^.+ should see broker active for the employer$/) do
   expect(page).to have_content('Logistics Inc')
-  expect(page).to have_content('RICKY MARTIN')
+  expect(page).to have_content(/RICKY MARTIN/i)
 end
 
 When(/^.+ terminates broker$/) do
