@@ -447,6 +447,7 @@ RSpec.describe Insured::FamiliesController do
 
 
     it "should be a redirect to new group selection page" do
+      allow(family).to receive(:is_under_shop_open_enrollment?).and_return true
       get :shop_for_employer, person_id: "person_id", employee_role_id: employee_role.id
       expect(response).to have_http_status(:redirect)
     end
@@ -468,8 +469,11 @@ RSpec.describe Insured::FamiliesController do
     end
 
     context "when not under shop open enrollment" do
+      let(:family_member) { FamilyMember.new }
       before do
         allow(family).to receive(:is_under_shop_open_enrollment?).and_return false
+        allow(family).to receive(:primary_applicant).and_return family_member
+        allow(family_member).to receive(:person).and_return FactoryGirl.create(:person)
         get :shop_for_employer, person_id: "person_id", employee_role_id: employee_role.id
       end
 
