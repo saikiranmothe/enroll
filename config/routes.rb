@@ -28,6 +28,7 @@ Rails.application.routes.draw do
         get :family_index
         get :employer_index
         get :broker_agency_index
+        get :general_agency_index
         get :issuer_index
         get :product_index
         get :configuration
@@ -35,6 +36,8 @@ Rails.application.routes.draw do
         get :staff_index
         get :assister_index
         get :request_help
+        get :verification_index
+        get :verifications_index_datatable
       end
 
       member do
@@ -97,6 +100,7 @@ Rails.application.routes.draw do
       get 'new'
       member do
         post 'unblock'
+        delete 'delete_consumer_broker'
       end
 
       collection do
@@ -105,7 +109,7 @@ Rails.application.routes.draw do
         get 'personal'
         get 'inbox'
         get 'brokers'
-        get 'documents_index'
+        get 'verification'
         get 'document_upload'
         get 'find_sep'
         post 'record_sep'
@@ -226,7 +230,7 @@ Rails.application.routes.draw do
   end
 
   # match 'thank_you', to: 'broker_roles#thank_you', via: [:get]
-  match 'broker_registration', to: 'broker_agencies/broker_roles#new_broker', via: [:get]
+  match 'broker_registration', to: 'broker_agencies/broker_roles#new_broker_agency', via: [:get]
 
   namespace :carriers do
     resources :carrier_profiles do
@@ -247,6 +251,15 @@ Rails.application.routes.draw do
         get :messages
         get :staff_index
         get :agency_messages
+        get :assign_history
+      end
+      member do
+        get :general_agency_index
+        get :manage_employers
+        post :clear_assign_for_employer
+        get :assign
+        post :update_assign
+        post :set_default_ga
       end
 
       resources :applicants
@@ -259,6 +272,34 @@ Rails.application.routes.draw do
         get :new_broker_agency
         get :search_broker_agency
       end
+      member do
+        get :favorite
+      end
+    end
+  end
+
+  match 'general_agency_registration', to: 'general_agencies/profiles#new_agency', via: [:get]
+  namespace :general_agencies do
+    root 'profiles#new'
+    resources :profiles do
+      collection do
+        get :new_agency_staff
+        get :search_general_agency
+        get :new_agency
+        get :messages
+        get :agency_messages
+        get :inbox
+        get :edit_staff
+        post :update_staff
+      end
+      member do
+        get :employers
+        get :families
+        get :staffs
+      end
+    end
+    resources :inboxes, only: [:new, :create, :show, :destroy] do
+      get :msg_to_portal
     end
   end
 
@@ -328,12 +369,16 @@ Rails.application.routes.draw do
 
   get "document/download/:bucket/:key" => "documents#download", as: :document_download
 
-  resources :documents, only: [:index, :update] do
+  resources :documents, only: [:update, :destroy, :update] do
     collection do
-      get :consumer_role_status
-      put :change_doc_status
       put :change_person_aasm_state
-      get :new_comment
+      get :show_docs
+      get :update_individual
+      put :update_verification_type
+      get :enrollment_verification
+      put :enrollment_docs_state
+      put :extend_due_date
+      get :fed_hub_request
     end
   end
 
