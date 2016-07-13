@@ -11,8 +11,8 @@ var add_btn_state = true;
 var history_btn_state = true;
 
 var columnVal = [ 
-                  { targets: [4, 5], orderable: false},
-                  { targets: [8, 9, 10, 11, 12, 13, 14, 15, 16, 17], visible: false}
+                  { targets: [5, 6], orderable: false},
+                  { targets: [9, 10, 11, 12, 13, 14, 15, 16, 17, 18], visible: false}
                 ];
                 
 var objDateMin;
@@ -61,7 +61,6 @@ function init_datepicker_for_qle_date(pre_event_sep_in_days, post_event_sep_in_d
 var self_attested;
 
 $(document).on('change','.admin_selected_sep_reason select',function(){  
-
   if($(this).val() == '') {
    $('.init_event_date').hide();    
    $('.admin_effective_on_kind_options').hide();
@@ -363,9 +362,9 @@ $('.sep_table tbody').on('click', 'span.add-control', function () {
   var btn_class = $(this).attr("class");
   var tr = $(this).closest('tr');
   var row = selectedTable.row(tr); 
-  var builder = row.data()[8];
-  var consumer = row.data()[4];
-  var employee = row.data()[5];
+  var builder = row.data()[9];
+  var consumer = row.data()[5];
+  var employee = row.data()[6];
 
   if (row.child.isShown() ) {
     add_btn_counter--;

@@ -3,10 +3,8 @@ module SepAll
   def includeBothMarkets
     dt_query = extract_datatable_parameters
     families_dt = []
-
-    #all_families = Family.exists(special_enrollment_periods: true)
     all_families = Family.all
-        #@families = all_families.to_a     
+
     if dt_query.search_string.blank?
       families_dt = all_families
     else
@@ -25,13 +23,8 @@ module SepAll
   end
  
   def includeIVL
-
     if QualifyingLifeEventKind.where(:market_kind => 'individual').present?
-      #ivl_qles = QualifyingLifeEventKind.where(:market_kind => 'individual').map(&:id)  
-      #all_families_in_ivl = Family.where(:"special_enrollment_periods.qualifying_life_event_kind_id".in => ivl_qles)
-       
       all_families_in_ivl = Family.all
-
       dt_query = extract_datatable_parameters
       families_dt = []
 
@@ -51,17 +44,11 @@ module SepAll
       @dataArray = sortData(families_dt, @state, 'yes')
       @families = @dataArray.slice(dt_query.skip.to_i, dt_query.take.to_i)
     end
-
   end
 
   def includeShop
-
     if QualifyingLifeEventKind.where(:market_kind => 'shop').present?
-      #shop_qles = QualifyingLifeEventKind.where(:market_kind => 'shop').map(&:id)  
-      #all_families_in_shop = Family.where(:"special_enrollment_periods.qualifying_life_event_kind_id".in => shop_qles)
-       
       all_families_in_shop = Family.all
-        
       dt_query = extract_datatable_parameters
       families_dt = []
 
@@ -81,7 +68,6 @@ module SepAll
       @dataArray = sortData(families_dt, @state, 'yes')
       @families = @dataArray.slice(dt_query.skip.to_i, dt_query.take.to_i)
     end
-
   end
 
   def createSep
@@ -112,7 +98,6 @@ module SepAll
   end
 
   def sortData(families, state, returnData=nil)
-
     init_arr = []
 
     if (state == 'both')
@@ -134,9 +119,7 @@ module SepAll
         end
       end
     end
-
-   returnData == 'yes' ? init_arr : init_arr.length;
     
+   returnData == 'yes' ? init_arr : init_arr.length;
   end
-
 end
