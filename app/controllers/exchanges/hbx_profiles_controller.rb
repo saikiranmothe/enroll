@@ -235,6 +235,7 @@ class Exchanges::HbxProfilesController < ApplicationController
         includeShop
       end
     end
+    
     setEventKinds
     render
   end

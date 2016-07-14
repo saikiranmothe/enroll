@@ -1,7 +1,7 @@
 <% fam.each do|family| if fam.present? %>
 	<% if family == fam.last %>
 		[
-			<%= raw (check_box_tag '', true, false, id: 'select_all_tag').to_json %>,	
+			<%= raw (check_box_tag '', true, false, id: 'select_tag').to_json %>,	
 			"<%= family.primary_applicant.person.full_name%>",
 			"<%= json_escape begin; number_to_obscured_ssn(family.primary_applicant.person.ssn); rescue; end %>",
 			"<%= family.primary_applicant.person.dob%>",
@@ -24,7 +24,7 @@
 		]
 	<% else %>	
 		[
-			<%= raw (check_box_tag '', true, false, id: 'select_all_tag').to_json %>,	
+			<%= raw (check_box_tag '', true, false, id: 'select_tag').to_json %>,	
 			"<%= family.primary_applicant.person.full_name%>",
 			"<%= json_escape begin; number_to_obscured_ssn(family.primary_applicant.person.ssn); rescue; end %>",
 			"<%= family.primary_applicant.person.dob%>",
