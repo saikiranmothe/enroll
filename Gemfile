@@ -37,6 +37,7 @@ gem 'nokogiri-happymapper', :require => 'happymapper'
 gem 'nokogiri', '1.6.7.2'
 
 gem 'mongoid', '5.0.1'
+gem 'mongoid-history'
 gem 'mongo', '2.1.2'
 gem 'carrierwave-mongoid', :require => 'carrierwave/mongoid'
 gem "mongoid-autoinc"

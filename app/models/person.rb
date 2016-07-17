@@ -12,6 +12,27 @@ class Person
   validates_with Validations::DateRangeValidator
 
 
+  include Mongoid::History::Trackable
+  Mongoid::History.tracker_class_name = :"journals/person_transaction"
+
+  track_history :on => [:name_pfx, :first_name, :middle_name, :last_name, :name_sfx, :full_name], 
+                        # tracker_class_name:   :"journals/person_transaction",
+                        track_create:         true,       # track document creation, default is false
+                        track_update:         true,       # track document updates, default is true
+                        track_destroy:        true,       # track document destruction, default is false
+                        version_field:        :version
+
+  # track_history   :on => [:title, :body],       # track title and body fields only, default is :all
+  #                   :modifier_field => :modifier, # adds "belongs_to :modifier" to track who made the change, default is :modifier
+  #                   :modifier_field_inverse_of => :nil, # adds an ":inverse_of" option to the "belongs_to :modifier" relation, default is not set
+  #                   :version_field => :version,   # adds "field :version, :type => Integer" to track current version, default is :version
+  #                   :track_create   =>  false,    # track document creation, default is false
+  #                   :track_update   =>  true,     # track document updates, default is true
+  #                   :track_destroy  =>  false     # track document destruction, default is false
+
+
+
+
   GENDER_KINDS = %W(male female)
   IDENTIFYING_INFO_ATTRIBUTES = %w(first_name last_name ssn dob)
   ADDRESS_CHANGE_ATTRIBUTES = %w(addresses phones emails)
