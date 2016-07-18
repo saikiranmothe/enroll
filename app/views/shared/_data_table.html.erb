@@ -64,7 +64,9 @@
   <% end %>
 </div>
 <script charset="utf-8" defer="defer" type="text/javascript">
+
   $(document).ready(function () {
+    console.log( 'Called at: '+new Date().getTime() );
     var enroll_datatable = $('#<%= table_id %>').EnrollDataTable({
       "destroy": <%= destroy || false %>,
       "processing": true,
