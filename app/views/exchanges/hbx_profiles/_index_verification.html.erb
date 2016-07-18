@@ -39,6 +39,7 @@
   		['Print', 'url', 'request_type']
   	],
     child_rows:  [false, "datatables/child_row"],
+    destroy: false,
     responsive:  true,
   	checkboxes:  false,
   	pagination:  true,
@@ -47,14 +48,14 @@
   	table_id:  "verification-dataTable",
   	data_url:  verifications_index_datatable_exchanges_hbx_profiles_path(:format => :json),
   	columns:  [
-      ["HBX ID", "hbx_id"],
-      ["First name", "first_name"],
-      ["Last name", "last_name"],
-      ["Documents", "documents"],
-      ["Due date", "due_date"],
-  	  ["Status", "review_status"],
-  	  ["Review", "review"],
-  	  ["FedHub", "fed_hub"]
+      ["HBX ID", "hbx_id", ""],
+      ["First name", "first_name", ""],
+      ["Last name", "last_name", ""],
+      ["Documents", "documents", ""],
+      ["Due date", "due_date", ""],
+  	  ["Status", "review_status", ""],
+  	  ["Review", "review", ""],
+  	  ["FedHub", "fed_hub", ""]
   	]
   } %>
 </div>
