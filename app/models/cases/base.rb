@@ -135,7 +135,7 @@ class Cases::Base
                               )
 
 
-  embeds_one  :"workflows/verification", as: :verifiable
+  # embeds_one  :verification, class_name: "Workflows::Verification", as: :verifiable
   embeds_many :case_notes, as: :commentable
   embeds_many :consumer_notes, as: :commentable
 
@@ -154,7 +154,7 @@ class Cases::Base
 
   field :attribute_list, type: Array, default: [] # used for tracking changes
 
-  accepts_nested_attributes_for :"workflows/verification", :case_notes, :consumer_notes
+  # accepts_nested_attributes_for :"workflows/verification", :case_notes, :consumer_notes
 
 
 
