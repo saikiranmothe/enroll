@@ -17,7 +17,7 @@ def plan_year_invalid_enrollments(plan_year)
 end
 
 def find_enrollments_with_invalid_plans
-  CSV.open("enrollments_with_wrong_plan_selection.csv", "w") do |csv|
+  CSV.open("enrollments_with_plans_not_offered_by_emploeyrs.csv", "w") do |csv|
 
     csv << [
       'Primary First Name',
@@ -29,30 +29,26 @@ def find_enrollments_with_invalid_plans
       'Coverage Start Date', 
       'Plan ID', 
       'Plan Name',
-      'Plan Status'
+      'Plan Status',
+      'Enrollment Created At'
     ]
 
-
-    Organization.exists(:employer_profile => true).where(
-      :"employer_profile.plan_years" => {:$elemMatch => {
-        :start_on => Date.new(2015,8,1),
-        :aasm_state.in => PlanYear::PUBLISHED
-      }}).each do |org|
+    Organization.exists(:employer_profile => true).each do |org|
 
       puts "---processing #{org.legal_name}"
 
       invalid_enrollments = []
 
-      # if plan_year = org.employer_profile.active_plan_year
-      #   invalid_enrollments += plan_year_invalid_enrollments(plan_year)
-      # end
+      if plan_year = org.employer_profile.active_plan_year
+        invalid_enrollments += plan_year_invalid_enrollments(plan_year)
+      end
 
       if plan_year = org.employer_profile.renewing_published_plan_year
         invalid_enrollments += plan_year_invalid_enrollments(plan_year)
       end
 
       invalid_enrollments.each do |enrollment|
-        next unless enrollment.auto_renewing?
+        # next unless enrollment.auto_renewing?
         person = enrollment.family.primary_applicant.person
         begin
         csv << [
@@ -63,12 +59,13 @@ def find_enrollments_with_invalid_plans
           org.employer_profile.profile_source == 'conversion',
           enrollment.benefit_group.start_on.strftime("%m/%d/%Y"),
           enrollment.effective_on.strftime("%m/%d/%Y"),
-          enrollment.plan.hios_id,
-          enrollment.plan.name,
-          enrollment.aasm_state.humanize.titleize
+          enrollment.plan.try(:hios_id),
+          enrollment.plan.try(:name),
+          enrollment.aasm_state.humanize.titleize,
+          enrollment.created_at.present? ? enrollment.created_at.strftime("%m/%d/%Y") : nil
         ]
 
-        enrollment.cancel_coverage! if enrollment.may_cancel_coverage?
+        # enrollment.cancel_coverage! if enrollment.may_cancel_coverage?
       rescue Exception => e
         puts "#{person.full_name}---#{e.to_s}"
       end
