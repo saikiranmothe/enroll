@@ -40,30 +40,28 @@
   		['Print', 'url', 'request_type']
   	],
     child_rows:  [false, "datatables/child_row"],
-    responsive:  false,
+    responsive:  true,
   	checkboxes:  false,
   	pagination:  true,
   	ordering:  false,
     destroy: true,
-  	info:  false,
+  	info:  true,
   	table_id:  "Quote-index-dataTable",
   	data_url:  quote_index_datatable_broker_agencies_quotes_path(:format => :json),
   	columns:  [
       ["Quote Name", "quote_name"],
       ["Family Count", "family_count","text-right"],
       ["Benefit Group Count", "benefit_group_count", "text-right"],
-      ["Claim Code", "claim_code"],
-      ["State", "quote_state"],
-  	  ["Roster", "quote_roster"],
-      ["", "quote_delete"]
+      ["Claim Code", "claim_code","text-right"],
+      ["State", "quote_state","text-right"],
+  	  ["Roster", "quote_roster","text-right"],
+      ["", "quote_delete","text-right"]
   	]
   } %>
 </div>
 </div>
 
 <script type="text/javascript" charset="utf-8">
-
-/*
 
   $('#Quote-index-dataTable').on( 'draw.dt', function () {
     console.log( 'Redraw occurred at: '+new Date().getTime() );
@@ -86,5 +84,4 @@
     event.preventDefault();
     $('#Quote-index-dataTable').DataTable().draw(false);
   };
-*/
 </script>
