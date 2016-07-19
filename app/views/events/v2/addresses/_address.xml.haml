@@ -1,6 +1,5 @@
 %address
-  - address.kind.eql?('home') ? type = 'home' : type = address.kind
-  %type= "urn:openhbx:terms:v1:address_type##{type}"
+  %type= "urn:openhbx:terms:v1:address_type##{address.kind}"
   %address_line_1= address.address_1
   - unless address.address_2.blank?
     %address_line_2= address.address_2
