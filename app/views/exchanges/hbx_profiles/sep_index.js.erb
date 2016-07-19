@@ -12,7 +12,7 @@ var history_btn_state = true;
 
 var columnVal = [ 
                   { targets: [5, 6], orderable: false},
-                  { targets: [9, 10, 11, 12, 13, 14, 15, 16, 17, 18], visible: false}
+                  { targets: [12, 13, 14, 15, 16, 17, 18, 19, 20, 21], visible: false}
                 ];
                 
 var objDateMin;
@@ -226,7 +226,12 @@ $('#tab_datatables a[data-toggle="tab"]').on("mousedown", function(){
   }
 });
 
+$('#tab_datatables_head a[data-toggle="tab"]').on("click", function(){
+
+});
+
 $('#tab_datatables a[data-toggle="tab"]').on("click", function(){
+  $('.insertTable').html("<%= escape_javascript render "sep/approval/all_sep"%>")
   if(history_btn_counter > 0){
     history_btn_state = false;
     $(idTable + 'i.history-control').trigger('click');
@@ -305,7 +310,7 @@ $('.sep_table tbody').on('click', 'span.add-control', function () {
   var btn_class = $(this).attr("class");
   var tr = $(this).closest('tr');
   var row = selectedTable.row(tr); 
-  var builder = row.data()[9];
+  var builder = row.data()[12];
   var consumer = row.data()[5];
   var employee = row.data()[6];
 
@@ -380,7 +385,8 @@ $('.sep_table tbody').on('click', 'span.add-control', function () {
     }
 });
 
-$( '#tab_datatables a[data-toggle="tab"]:first').trigger("click");
+$('#tab_datatables a[data-toggle="tab"]:first').trigger("click");
+$('#tab_datatables_head a[data-toggle="tab"]:first').trigger("click");
 
 function resetButtons(button){
   button.prop('disabled', false);
