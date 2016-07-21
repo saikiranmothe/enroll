@@ -1,5 +1,5 @@
 require 'csv'
-csv_file_path = "iam.csv"
+csv_file_path = "iam_users_072116.csv"
 mismatch_count = 0
 oim_update_count = 0
 
@@ -7,7 +7,7 @@ oim_mismatch_report = File.open("oim_mismatch_report.txt", "w")
 oim_blank_report = File.open("oim_blank_report.txt", "w")
 blank_oim_and_invalid_users = File.open("oim_blank_and_invalid_users.txt", "w")
 
-CSV.foreach(csv_file_path, headers: true) do |row|
+CSV.foreach(csv_file_path, headers: true, :encoding => 'windows-1251:utf-8') do |row|
   users = row.to_hash
   iam_email = users["IAM_EMAIL"]
   iam_username = users["IAM_USERNAME"]     # Synonymous to oim_id in the Person record.
