@@ -101,23 +101,29 @@ class Exchanges::HbxProfilesController < ApplicationController
 
     # TODO: Add field sorting and query ordering
 
-    #order records by plan_year.start_on and by legal_name
-    # employers = employers.er_invoice_data_table_order
+    # order records by plan_year.start_on and by legal_name
+    employers = employers.er_invoice_data_table_order
 
     datatable_payload = employers.map { |er|
+      plan_year = er.employer_profile.latest_plan_year
+      census_employees = plan_year.find_census_employees
+      enrolled = plan_year.try(:enrolled).try(:count).to_i
+      eligible_to_enroll_count = census_employees.try(:active).try(:count).to_i
+      waived = census_employees.try(:waived).try(:count).to_i
+
       {
+
         :invoice_id => ('<input type="checkbox" name="employerId[]" value="' + er.id.to_s + '">'),
-        # :fein => view_context.number_to_obscured_fein(er.fein),
         :fein => er.fein,
         :legal_name => (view_context.link_to er.legal_name, employers_employer_profile_path(er.employer_profile)+"?tab=home"),
         :is_conversion => view_context.boolean_to_glyph(er.employer_profile.is_conversion?),
         :state => er.employer_profile.aasm_state.humanize,
-        :plan_year => er.employer_profile.latest_plan_year.try(:effective_date).to_s,
+        :plan_year => plan_year.try(:effective_date).to_s,
         :is_current_month_invoice_generated => view_context.boolean_to_glyph(er.current_month_invoice.present?),
-        :enrolled => er.employer_profile.try(:latest_plan_year).try(:enrolled).try(:count).to_i.to_s + "/" + er.employer_profile.try(:latest_plan_year).try(:waived_count).to_i.to_s,
-        :remaining => er.employer_profile.try(:latest_plan_year).try(:eligible_to_enroll_count).to_i - er.employer_profile.try(:latest_plan_year).try(:enrolled).try(:count).to_i,
-        :eligible => er.employer_profile.try(:latest_plan_year).try(:eligible_to_enroll_count).to_i,
-        :enrollment_ratio => (er.employer_profile.try(:latest_plan_year).try(:enrollment_ratio).to_f * 100).to_i
+        :enrolled => enrolled.to_s + "/" + waived.to_s,
+        :remaining => eligible_to_enroll_count - enrolled.to_i,
+        :eligible => eligible_to_enroll_count,
+        :enrollment_ratio => ((enrolled / eligible_to_enroll_count * 100).to_i rescue 0)
       }
     }
 
