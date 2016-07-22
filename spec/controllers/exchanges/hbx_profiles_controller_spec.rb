@@ -382,4 +382,51 @@ RSpec.describe Exchanges::HbxProfilesController, dbclean: :after_each do
       expect(assigns(:general_agency_profiles)).to eq Kaminari.paginate_array(GeneralAgencyProfile.filter_by())
     end
   end
+
+  describe "employer_invoice_datatable" do
+    let(:user) { FactoryGirl.create(:user, roles: ["hbx_staff"]) }
+    before :each do
+      allow(user).to receive(:has_hbx_staff_role?).and_return(true)
+      sign_in user
+      @organization_renewing = FactoryGirl.create :employer
+      @organization_initial = FactoryGirl.create :employer
+      @organization_renewing.employer_profile.plan_years << FactoryGirl.build(:plan_year_not_started, :renewing_published)
+      @organization_initial.employer_profile.plan_years << FactoryGirl.build(:plan_year_not_started,:active)
+    end
+
+    it "should returns http success with all employers" do
+      xhr :post, :employer_invoice_datatable
+      expect(response).to have_http_status(:success)
+      expect(assigns(:payload))
+      expect(assigns(:total_records))
+      expect(assigns(:records_filtered)).to eq 2
+    end
+
+    it "should returns http success with renewing and initial employers" do
+      xhr :post, :employer_invoice_datatable , :invoice_date_criteria => "All"
+      expect(response).to have_http_status(:success)
+      expect(assigns(:payload))
+      expect(assigns(:total_records))
+      expect(assigns(:records_filtered)).to eq 2
+    end
+
+     it "should returns http success with renewal employers" do
+      start_on = (TimeKeeper.date_of_record + 90).beginning_of_month
+      xhr :post, :employer_invoice_datatable , :invoice_date_criteria => "#{start_on}:R"
+      expect(response).to have_http_status(:success)
+      expect(assigns(:payload))
+      expect(assigns(:total_records))
+      expect(assigns(:records_filtered)).to eq 1
+    end
+
+    it "should returns http success with initial employers" do
+      start_on = (TimeKeeper.date_of_record + 90).beginning_of_month
+      xhr :post, :employer_invoice_datatable , :invoice_date_criteria => "#{start_on}:I"
+      expect(response).to have_http_status(:success)
+      expect(assigns(:payload))
+      expect(assigns(:total_records))
+      expect(assigns(:records_filtered)).to eq 1
+    end
+
+  end
 end

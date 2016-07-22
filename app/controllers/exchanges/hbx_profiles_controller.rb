@@ -68,8 +68,7 @@ class Exchanges::HbxProfilesController < ApplicationController
     all_employers = Organization.where(:employer_profile => {:$exists => 1}).invoice_view_all
     employers = all_employers
     is_search = false
-
-    if !params[:invoice_date_criteria].blank? && params[:invoice_date_criteria] != "All"
+    if !params[:invoice_date_criteria].blank? && params[:invoice_date_criteria].try(:upcase) != "ALL"
       invoice_date = params[:invoice_date_criteria].split(":")[0]
       invoice_state = params[:invoice_date_criteria].split(":")[1]
 
@@ -83,7 +82,7 @@ class Exchanges::HbxProfilesController < ApplicationController
     end
 
 
-    if dt_query.search_string.blank? && (params[:invoice_date_criteria].blank? || params[:invoice_date_criteria] == "All")
+    if dt_query.search_string.blank? && (params[:invoice_date_criteria].blank? || params[:invoice_date_criteria].try(:upcase) == "ALL")
       employers = all_employers
     else
       #this will search on FEIN or Legal Name of an employer

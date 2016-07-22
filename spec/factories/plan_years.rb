@@ -17,4 +17,14 @@ FactoryGirl.define do
     open_enrollment_end_on { open_enrollment_start_on + 2.weeks }
     fte_count { 5 }
   end
+
+  trait :renewing_published do
+    aasm_state "renewing_published"
+  end
+
+  trait :active do
+    aasm_state "active"
+  end
+
+
 end
