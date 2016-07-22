@@ -77,7 +77,8 @@ class Organization
   index({"employer_profile.aasm_state" => 1})
 
   index({"employer_profile.plan_years._id" => 1}, { unique: true, sparse: true })
-  index({"employer_profile.plan_years.aasm_state.start_on" => 1})
+  index({"employer_profile.plan_years.aasm_state" => 1, "employer_profile.plan_years.start_on" => 1})
+  index({"employer_profile.plan_years.aasm_state" => 1})
   index({"employer_profile.plan_years.start_on" => 1})
   index({"employer_profile.plan_years.end_on" => 1})
   index({"employer_profile.plan_years.open_enrollment_start_on" => 1})
