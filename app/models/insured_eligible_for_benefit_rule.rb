@@ -15,7 +15,6 @@ class InsuredEligibleForBenefitRule
     @role = role
     @benefit_package = benefit_package
     @coverage_kind = coverage_kind
-    @family_member= family_member
   end
 
   def setup
