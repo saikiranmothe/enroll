@@ -57,7 +57,9 @@
           <% end %>
 
 
-          <% if can_shop_both_markets?(@person) %>
+          <% if @shop_for_employer %>
+            <%= hidden_field_tag 'market_kind', @market_kind %>
+          <% elsif can_shop_both_markets?(@person) %>
             <div id="market_kinds" class='row no-buffer'>
                 <h3>Marketplace</h3>
               <span class="clear" style="display: il"></span>

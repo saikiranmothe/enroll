@@ -7,9 +7,8 @@ RSpec.describe "insured/families/_employer_panel.html.erb" do
 
   before :each do
     assign(:person, person)
-    assign(:employee_role, employee_role)
     allow(view).to receive(:is_under_open_enrollment?).and_return true
-    render "insured/families/employer_panel"
+    render partial: "insured/families/employer_panel", locals: {employee_role: employee_role}
   end
 
   it "should have carousel-qles area" do

@@ -62,6 +62,22 @@ RSpec.describe Insured::GroupSelectionController, :type => :controller do
       expect(assigns(:change_plan)).to eq ""
     end
 
+    context "shop_for_employer" do
+      before :each do
+        sign_in user
+      end
+
+      it "should return true" do
+        get :new, person_id: person.id, employee_role_id: employee_role.id, market_kind: 'shop', shop_for_employer: 'shop_for_employer'
+        expect(assigns(:shop_for_employer)).to eq true
+      end
+
+      it "should return false" do
+        get :new, person_id: person.id, employee_role_id: employee_role.id
+        expect(assigns(:shop_for_employer)).to eq false
+      end
+    end
+
     it "return change_plan" do
       sign_in user
       get :new, person_id: person.id, employee_role_id: employee_role.id, change_plan: "change"

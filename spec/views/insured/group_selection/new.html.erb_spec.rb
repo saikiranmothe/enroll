@@ -452,6 +452,15 @@ RSpec.describe "insured/group_selection/new.html.erb" do
       #   end
       # end
     end
+
+    it "when shop_for_employer" do
+      assign :market_kind, 'shop'
+      assign :shop_for_employer, true
+      render file: "insured/group_selection/new.html.erb"
+      expect(rendered).to have_selector("input[type='hidden']")
+      expect(rendered).to have_selector("input[value='shop']")
+      expect(rendered).not_to have_selector("input[value='individual']")
+    end
   end
 
   context "change plan with consumer role" do

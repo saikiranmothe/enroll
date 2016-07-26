@@ -104,7 +104,7 @@ class Insured::FamiliesController < FamiliesController
   end
 
   def shop_for_employer
-    action_params = {person_id: @person.id, employee_role_id: params[:employee_role_id]}
+    action_params = {person_id: @person.id, employee_role_id: params[:employee_role_id], market_kind: 'shop', shop_for_employer: 'shop_for_employer'}
     unless @family.is_under_shop_open_enrollment?
       qle = QualifyingLifeEventKind.where(reason: "new_employment", market_kind: 'shop').last
       if qle.present? && @employee_role.present?

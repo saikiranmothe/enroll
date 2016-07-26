@@ -18,6 +18,7 @@ class Insured::GroupSelectionController < ApplicationController
     initialize_common_vars
     @employee_role = @person.active_employee_roles.first if @employee_role.blank? and @person.has_active_employee_role?
     @market_kind = select_market(@person, params)
+    @shop_for_employer = params[:shop_for_employer] == 'shop_for_employer' && @market_kind == 'shop'
 
     if @market_kind == 'individual' || (@person.try(:has_active_employee_role?) && @person.try(:has_active_consumer_role?))
       if params[:hbx_enrollment_id].present?

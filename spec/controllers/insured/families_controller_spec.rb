@@ -480,7 +480,7 @@ RSpec.describe Insured::FamiliesController do
 
       it "should redirect to new group selection page without sep" do
         expect(response).to have_http_status(:redirect)
-        expect(response).to redirect_to(new_insured_group_selection_path({person_id: person.id, employee_role_id: employee_role.id}))
+        expect(response).to redirect_to(new_insured_group_selection_path({person_id: person.id, employee_role_id: employee_role.id, market_kind: 'shop', shop_for_employer: 'shop_for_employer'}))
       end
     end
 
@@ -499,7 +499,7 @@ RSpec.describe Insured::FamiliesController do
 
       it "should redirect to new group selection page with sep" do
         expect(response).to have_http_status(:redirect)
-        expect(response).to redirect_to(new_insured_group_selection_path({person_id: person.id, employee_role_id: employee_role.id, enrollment_kind: 'sep'}))
+        expect(response).to redirect_to(new_insured_group_selection_path({person_id: person.id, employee_role_id: employee_role.id, enrollment_kind: 'sep', market_kind: 'shop', shop_for_employer: 'shop_for_employer'}))
       end
     end
   end
