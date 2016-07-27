@@ -3,7 +3,7 @@ feins = ["23-7333380", "52-1263300", "46-0580695", "47-3510402", "45-2393822", "
 Dir.mkdir("employer_xmls.v2") unless File.exists?("employer_xmls.v2")
 
 carrier_abbreviations = {
-    "CareFirst": "AHI", "Aetna": "GHMSI", "Kaiser": "KFMASI", "United Health Care": "UHIC", "Delta Dental": "DDPA",
+    "CareFirst": "GHMSI", "Aetna": "AHI", "Kaiser": "KFMASI", "United Health Care": "UHIC", "Delta Dental": "DDPA",
     "Dentegra": "DTGA", "Dominion": "DMND", "Guardian": "GARD", "BestLife": "BLHI", "MetLife": "META"}
 
 plan_year = {"start_date": "20160801", "end_date": "20160731"}
