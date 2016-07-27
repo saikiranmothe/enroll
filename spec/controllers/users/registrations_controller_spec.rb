@@ -11,7 +11,7 @@ RSpec.describe Users::RegistrationsController do
 
       before(:each) do
         @request.env["devise.mapping"] = Devise.mappings[:user]
-        allow(CuramUser).to receive(:match_email).with(email).and_return([curam_user])
+        allow(CuramUser).to receive(:match_unique_login).with(email).and_return([curam_user])
       end
 
       it "should redirect to saml recovery page if user matches" do
@@ -26,7 +26,7 @@ RSpec.describe Users::RegistrationsController do
 
       before(:each) do
         @request.env["devise.mapping"] = Devise.mappings[:user]
-        allow(CuramUser).to receive(:match_email).with("test@example.com").and_return([])
+        allow(CuramUser).to receive(:match_unique_login).with("test@example.com").and_return([])
       end
 
       it "should not redirect to saml recovery page if user matches" do
@@ -38,28 +38,21 @@ RSpec.describe Users::RegistrationsController do
 
     context "account without person" do
       let(:email) { "devise@test.com" }
+      let!(:user) { FactoryGirl.create(:user, email: email, oim_id: email) }
 
       before do
         @request.env["devise.mapping"] = Devise.mappings[:user]
       end
 
-      subject do
+      it "should complete sign up and redirect" do
         post :create, { user: { email: email, password: password, password_confirmation: password } }
-      end
-
-      it 'creates the user' do
-        expect { subject }.to change { User.all.count }.by(1)
-      end
-
-      it "redirects to root_path" do
-        subject
         expect(response).to redirect_to(root_path)
       end
     end
 
     context "account with person" do
       let(:email) { "devisepersoned@test.com"}
-      let(:user) { FactoryGirl.create(:user, email: email, person: person) }
+      let(:user) { FactoryGirl.create(:user, email: email, person: person, oim_id: email) }
       let(:person) { FactoryGirl.create(:person) }
 
       before do

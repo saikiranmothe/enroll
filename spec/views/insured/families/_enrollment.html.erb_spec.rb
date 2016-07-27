@@ -47,7 +47,7 @@ RSpec.describe "insured/families/_enrollment.html.erb" do
       allow(hbx_enrollment).to receive(:hbx_id).and_return(true)
       allow(hbx_enrollment).to receive(:benefit_group).and_return(benefit_group)
       allow(hbx_enrollment).to receive(:consumer_role_id).and_return(false)
-
+      allow(hbx_enrollment).to receive(:is_shop?).and_return(false)
 
       render partial: "insured/families/enrollment", collection: [hbx_enrollment], as: :hbx_enrollment
     end
@@ -57,7 +57,7 @@ RSpec.describe "insured/families/_enrollment.html.erb" do
 
     it "should display the title" do
       expect(rendered).to match /#{plan.active_year} #{plan.coverage_kind} Coverage/
-      expect(rendered).to match /DC Health Link/
+      expect(rendered).to match /#{Settings.site.short_name}/
     end
 
     it "should display the link of view detail" do
@@ -98,16 +98,14 @@ RSpec.describe "insured/families/_enrollment.html.erb" do
       allow(hbx_enrollment).to receive(:in_time_zone).and_return(true)
       allow(hbx_enrollment).to receive(:benefit_group).and_return(benefit_group)
       allow(hbx_enrollment).to receive(:consumer_role_id).and_return(person.id)
-
-
-
+      allow(hbx_enrollment).to receive(:is_shop?).and_return(false)
 
       render partial: "insured/families/enrollment", collection: [hbx_enrollment], as: :hbx_enrollment
     end
 
     it "should display the title" do
       expect(rendered).to match /#{plan.active_year} health Coverage/i
-      expect(rendered).to match /DC Health Link/
+      expect(rendered).to match /#{Settings.site.short_name}/
     end
 
     it "should display the aptc amount" do
@@ -133,8 +131,7 @@ RSpec.describe "insured/families/_enrollment.html.erb" do
       allow(hbx_enrollment).to receive(:in_time_zone).and_return(true)
       allow(hbx_enrollment).to receive(:benefit_group).and_return(benefit_group)
       allow(hbx_enrollment).to receive(:consumer_role_id).and_return(person.id)
-
-
+      allow(hbx_enrollment).to receive(:is_shop?).and_return(false)
 
       render partial: "insured/families/enrollment", collection: [hbx_enrollment], as: :hbx_enrollment
     end

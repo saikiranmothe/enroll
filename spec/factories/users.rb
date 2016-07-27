@@ -1,6 +1,7 @@
 FactoryGirl.define do
   factory :user do
-    sequence(:email) {|n| "example\##{n}@example.com"}
+    sequence(:email) {|n| "example#{n}@example.com"}
+    sequence(:oim_id) {|n| "example#{n}"}
     gen_pass = User.generate_valid_password
     password gen_pass
     password_confirmation gen_pass
@@ -21,8 +22,16 @@ FactoryGirl.define do
     password_confirmation ' '
   end
 
+
   trait :hbx_staff do
     roles ["hbx_staff"]
+
+    after :create do |user, evaluator|
+      if user.person.present?
+      user.person.hbx_staff_role = FactoryGirl.build :hbx_staff_role
+      user.save
+      end
+    end
   end
 
   trait :consumer do
@@ -41,18 +50,6 @@ FactoryGirl.define do
     roles ["employee"]
   end
 
-  trait :employer_staff do
-    roles ["employer_staff"]
-  end
-
-  trait "broker" do
-    roles ["broker"]
-  end
-
-  trait "broker_agency_staff" do
-    roles ["broker_agency_staff"]
-  end
-
   trait :employer do
     transient do
       organization {}
@@ -68,9 +65,31 @@ FactoryGirl.define do
     end
   end
 
+  trait :employer_staff do
+    roles ["employer_staff"]
+  end
+
+  trait "broker" do
+    roles ["broker"]
+  end
+
+  trait "broker_agency_staff" do
+    roles ["broker_agency_staff"]
+  end
+
+  trait :general_agency_staff do
+    roles ['general_agency_staff']
+  end
+
   trait :with_consumer_role do
     after :create do |user|
       FactoryGirl.create :person, :with_consumer_role, :with_family, :user => user
+    end
+  end
+
+  trait :with_csr_sub_role do
+    after :create do |user|
+      FactoryGirl.create :person, :with_csr_role, :with_family, :user => user
     end
   end
 

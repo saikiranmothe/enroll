@@ -7,7 +7,7 @@ class Insured::PlanShoppingsController < ApplicationController
   include Acapi::Notifiers
   extend Acapi::Notifiers
   include Aptc
-  before_action :set_current_person, :only => [:receipt, :thankyou, :waive, :show, :plans, :checkout]
+  before_action :set_current_person, :only => [:receipt, :thankyou, :waive, :show, :plans, :checkout, :terminate]
   before_action :set_kind_for_market_and_coverage, only: [:thankyou, :show, :plans, :checkout, :receipt]
 
   def checkout
@@ -22,6 +22,9 @@ class Insured::PlanShoppingsController < ApplicationController
     end
 
     if !plan_selection.may_select_coverage?
+      if plan_selection.hbx_enrollment.errors.present?
+        flash[:error] = plan_selection.hbx_enrollment.errors.full_messages
+      end
       redirect_to :back
       return
     end
@@ -108,9 +111,22 @@ class Insured::PlanShoppingsController < ApplicationController
     hbx_enrollment = HbxEnrollment.find(params.require(:id))
     waiver_reason = params[:waiver_reason]
 
-    if hbx_enrollment.may_waive_coverage? && waiver_reason.present? && hbx_enrollment.valid?
-      hbx_enrollment.update_current(aasm_state: "inactive", waiver_reason: waiver_reason)
-      hbx_enrollment.propogate_waiver
+    # Create a new hbx_enrollment for the waived enrollment.
+    unless hbx_enrollment.shopping?
+      employee_role = @person.employee_roles.active.last if employee_role.blank? and @person.has_active_employee_role?
+      coverage_household = @person.primary_family.active_household.immediate_family_coverage_household
+      waived_enrollment =  coverage_household.household.new_hbx_enrollment_from(employee_role: employee_role, coverage_household: coverage_household, benefit_group: nil, benefit_group_assignment: nil, qle: (@change_plan == 'change_by_qle' or @enrollment_kind == 'sep'))
+
+      waived_enrollment.generate_hbx_signature
+
+      if waived_enrollment.save!
+        hbx_enrollment = waived_enrollment
+        hbx_enrollment.household.reload # Make sure we reload the household to reflect the newly created HbxEnrollment
+      end
+    end
+
+    if hbx_enrollment.may_waive_coverage? and waiver_reason.present? and hbx_enrollment.valid?
+      hbx_enrollment.waive_coverage_by_benefit_group_assignment(waiver_reason)
       redirect_to print_waiver_insured_plan_shopping_path(hbx_enrollment), notice: "Waive Coverage Successful"
     else
       redirect_to new_insured_group_selection_path(person_id: @person.id, change_plan: 'change_plan', hbx_enrollment_id: hbx_enrollment.id), alert: "Waive Coverage Failed"
@@ -125,8 +141,9 @@ class Insured::PlanShoppingsController < ApplicationController
     hbx_enrollment = HbxEnrollment.find(params.require(:id))
 
     if hbx_enrollment.may_terminate_coverage?
-      hbx_enrollment.update_current(aasm_state: "coverage_terminated", terminated_on: TimeKeeper.date_of_record.end_of_month)
-      hbx_enrollment.propogate_terminate
+      hbx_enrollment.terminate_reason = params[:terminate_reason] if params[:terminate_reason].present?
+      hbx_enrollment.terminated_on = @person.primary_family.terminate_date_for_shop_by_enrollment(hbx_enrollment)
+      hbx_enrollment.terminate_coverage!
 
       redirect_to family_account_path
     else
