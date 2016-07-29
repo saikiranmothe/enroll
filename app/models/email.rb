@@ -1,10 +1,11 @@
 class Email
   include Mongoid::Document
   include Mongoid::Timestamps
+  include Mongoid::History::Trackable
 
   include Validations::Email
 
-  embedded_in :person
+  embedded_in :person, inverse_of: :emails
   embedded_in :office_location
   embedded_in :census_member, class_name: "CensusMember"
 
@@ -12,6 +13,8 @@ class Email
 
   field :kind, type: String
   field :address, type: String
+
+  track_history on: [:kind, :address], scope: :person, track_create: true, track_update: true
 
   validates :address, :email => true, :allow_blank => false
   validates_presence_of  :kind, message: "Choose a type"

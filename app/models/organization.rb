@@ -2,7 +2,6 @@ class Organization
   include Mongoid::Document
   include SetCurrentUser
   include Mongoid::Timestamps
-  include Mongoid::Versioning
 
   extend Mongorder
 

@@ -36,12 +36,13 @@ gem 'font-awesome-rails', '4.5.0.1'
 gem 'nokogiri-happymapper', :require => 'happymapper'
 gem 'nokogiri', '1.6.7.2'
 
-gem 'mongoid', '5.0.1'
-gem 'mongoid-history'
 gem 'mongo', '2.1.2'
+gem 'mongoid', '5.0.1'
+# gem 'mongoid-history', git: "https://github.com/aq1018/mongoid-history.git"
+gem 'mongoid-history'
+gem 'mongoid_userstamp'
 gem 'carrierwave-mongoid', :require => 'carrierwave/mongoid'
 gem "mongoid-autoinc"
-gem 'mongoid-versioning'
 
 gem 'money-rails', '~> 1.3.0'
 gem "mongoid-enum"
