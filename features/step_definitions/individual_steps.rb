@@ -91,7 +91,6 @@ Then (/Individual resumes enrollment/) do
   click_link 'Consumer/Family Portal'
 end
 
-# binding.pry
 Then (/Individual sees previously saved address/) do
   expect(page).to have_field('ADDRESS LINE 1 *', with: '4900 USAA BLVD')
   find('.btn', text: 'CONTINUE').click
@@ -504,3 +503,4 @@ Then(/Aptc user should see aptc amount on individual home page/) do
   screenshot("aptc_ivl_home")
 
 end
+
