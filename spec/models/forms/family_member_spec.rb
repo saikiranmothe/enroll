@@ -2,6 +2,8 @@ require 'rails_helper'
 
 describe Forms::FamilyMember do
   let(:family_id) { double }
+  let(:person){FactoryGirl.create :person }
+
   let(:family) { instance_double("Family") }
   before(:each) do
     allow(Family).to receive(:find).and_return(family)
@@ -416,23 +418,37 @@ describe Forms::FamilyMember, "relationship validation" do
   end
 
   context "grand child" do
-    let(:relationship) { "grandchild" }
+    # let(:relationship) { "grandchild" }
     let(:person){FactoryGirl.create :person }
-    subject { Forms::FamilyMember.new(person_properties.merge({:family_id => family.id, :relationship => relationship , :is_primary_caregiver => true})) }
+    subject { Forms::FamilyMember.new(person_properties.merge({:family_id => family.id, :relationship => "grandchild" , :is_primary_caregiver => true})) }
 
-    it "should save dependent" do
-      allow(family_member).to receive(:relationship).and_return(relationship)
+    it "should be valid" do
+      allow(family_member).to receive(:relationship).and_return("grandchild")
       expect(subject.valid?).to be true
     end
 
-    # it "should save is_primary_caregiver info to primary_applicant" do
-    #   allow(family_member).to receive(:relationship).and_return(relationship)
-    #   allow(family).to receive_message_chain("primary_family_member.person").and_return(person)
-    #   allow(family).to receive(:primary_applicant_person).and_return(person)
-    #   allow(family).to receive(:save_relevant_coverage_households).and_return(true)
-    #   subject.save
-    #   expect(person.is_primary_caregiver).to be true
-    # end
+    it "should save is_primary_caregiver info to primary_applicant of grandchild" do
+      allow(family_member).to receive(:relationship).and_return("grandchild")
+      allow(subject).to receive_message_chain("family.primary_family_member.person").and_return(person)
+      allow(subject).to receive(:relationship_validation).and_return(true)
+      allow(subject.family).to receive(:save_relevant_coverage_households).and_return(true)
+      allow(subject.family).to receive(:find_matching_inactive_member).and_return(nil)
+      allow(Person).to receive(:match_existing_person).and_return(nil)
+      allow(subject.family).to receive(:relate_new_member).and_return(subject)
+      allow(subject.family).to receive(:save!).and_return(true)
+      subject.save
+      expect(person.is_primary_caregiver).to be true
+    end
+  end
+  
+  context "nephew_or_niece" do
+    let(:person){FactoryGirl.create :person }
+    subject { Forms::FamilyMember.new(person_properties.merge({:family_id => family.id, :relationship => "nephew_or_niece" , :is_primary_caregiver => true})) }
+
+    it "should save dependent" do
+      allow(subject).to receive(:relationship).and_return("nephew_or_niece")
+      expect(subject.valid?).to be true
+    end
   end
 
 
