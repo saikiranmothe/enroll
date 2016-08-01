@@ -2,6 +2,9 @@ class Email
   include Mongoid::Document
   include Mongoid::Timestamps
   include Mongoid::History::Trackable
+  include AuditTrail
+
+  # history_tracking_scope :person
 
   include Validations::Email
 
@@ -13,8 +16,6 @@ class Email
 
   field :kind, type: String
   field :address, type: String
-
-  track_history on: [:kind, :address], scope: :person, track_create: true, track_update: true
 
   validates :address, :email => true, :allow_blank => false
   validates_presence_of  :kind, message: "Choose a type"
