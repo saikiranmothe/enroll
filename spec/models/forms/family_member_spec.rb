@@ -417,8 +417,17 @@ describe Forms::FamilyMember, "relationship validation" do
     end
   end
 
+  context "child" do
+    let(:person){FactoryGirl.create :person }
+    subject { Forms::FamilyMember.new(person_properties.merge({:family_id => family.id, :relationship => "child" , :is_primary_caregiver => true})) }
+
+    it "should be valid" do
+      allow(family_member).to receive(:relationship).and_return("child")
+      expect(subject.valid?).to be true
+    end
+  end
+
   context "grand child" do
-    # let(:relationship) { "grandchild" }
     let(:person){FactoryGirl.create :person }
     subject { Forms::FamilyMember.new(person_properties.merge({:family_id => family.id, :relationship => "grandchild" , :is_primary_caregiver => true})) }
 
