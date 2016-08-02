@@ -72,12 +72,8 @@ class InsuredEligibleForBenefitRule
   def is_family_relationships_satisfied?
     age = age_on_next_effective_date(@role.dob)
     return true if relation_ship_with_primary_applicant.nil?
-
-    if relation_ship_with_primary_applicant == 'child' && age < 26 
-      return true
-    end
     
-    if ['nephew_or_niece', 'grandchild'].include?(relation_ship_with_primary_applicant)
+    if ['child','nephew_or_niece', 'grandchild'].include?(relation_ship_with_primary_applicant)
       if age >= 26 && @role.person.is_disabled?  || age < 26 && has_caregiver?
         return true
       end

@@ -1,7 +1,7 @@
 var ManageFamilies = (function (window){
 	function appendDependentQuestions(){
 	var option = $("#dependent_relationship").val();
-	 var dependent_list = [ "nephew_or_niece", "grandchild"];
+	 var dependent_list = [ "child" ,"nephew_or_niece", "grandchild"];
 	 // get age from DOB
 	 var dob = $("#family_member_dob_");
 		if(dob != null && dob.val() != null){
