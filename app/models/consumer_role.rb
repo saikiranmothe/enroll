@@ -8,8 +8,10 @@ class ConsumerRole
   include AASM
   include Mongoid::Attributes::Dynamic
   include StateTransitionPublisher
+  include Mongoid::History::Trackable
+  include AuditTrail
 
-  embedded_in :person
+  embedded_in :person, inverse_of: :consumer_role
 
   VLP_AUTHORITY_KINDS = %w(ssa dhs hbx curam)
   NATURALIZED_CITIZEN_STATUS = "naturalized_citizen"

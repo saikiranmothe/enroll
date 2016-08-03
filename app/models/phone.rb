@@ -1,8 +1,10 @@
 class Phone
   include Mongoid::Document
   include Mongoid::Timestamps
+  include Mongoid::History::Trackable
+  include AuditTrail
 
-  embedded_in :person
+  embedded_in :person, inverse_of: :phones
   embedded_in :office_location
   embedded_in :census_member, class_name: "CensusMember"
 
