@@ -116,7 +116,7 @@ class Person
   before_save :generate_hbx_id
   before_save :update_full_name
   before_save :strip_empty_fields
-  after_save :generate_family_search
+#  after_save :generate_family_search
   after_create :create_inbox
 
   index({hbx_id: 1}, {sparse:true, unique: true})
@@ -200,7 +200,7 @@ class Person
   validate :consumer_fields_validations
 
   after_create :notify_created
-  after_update :notify_updated
+#  after_update :notify_updated
 
   def notify_created
     notify(PERSON_CREATED_EVENT_NAME, {:individual_id => self.hbx_id } )
