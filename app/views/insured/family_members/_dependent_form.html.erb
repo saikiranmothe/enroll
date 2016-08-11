@@ -117,6 +117,8 @@
           </div>
         </div>
       <% elsif @person.has_active_employee_role? %>
+        <%= render 'shared/primary_caregiver_question_for_dependent', f: f %>
+        <%= render 'shared/disability_question_for_dependent', f: f %>
         <%= f.hidden_field :same_with_primary, value: 'false' %>
         <%= render 'shared/address_fields_for_dependent', f: f %>
       <% end %>
