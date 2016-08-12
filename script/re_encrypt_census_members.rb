@@ -8,18 +8,16 @@ CensusEmployee.all.each do |pers|
       ssn_value = SymmetricEncryption.secondary_ciphers.first.decrypt(encrypted_ssn) rescue nil
       if !ssn_value.blank? && (ssn_value =~ /[0-9]{9}/)
         pers.set(encrypted_ssn: SymmetricEncryption.encrypt(ssn_value))
-        pers.reload
       end
     end
     pers.census_dependents.each do |ver|
       if !ver.encrypted_ssn.blank?
         dec_ver_ssn = SymmetricEncryption.secondary_ciphers.first.decrypt(ver.encrypted_ssn) rescue nil
         if !dec_ver_ssn.blank? && (dec_ver_ssn =~ /[0-9]{9}/)
-          ver.encrypted_ssn = SymmetricEncryption.encrypt(dec_ver_ssn)
+          ver.set(encrypted_ssn: SymmetricEncryption.encrypt(dec_ver_ssn))
         end
       end
     end
-    pers.save!
     re_encrypted_people = re_encrypted_people + 1
   rescue OpenSSL::Cipher::CipherError
     puts pers.id
