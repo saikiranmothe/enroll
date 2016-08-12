@@ -7,7 +7,8 @@ CensusEmployee.all.each do |pers|
     if !pers.encrypted_ssn.blank?
       ssn_value = SymmetricEncryption.secondary_ciphers.first.decrypt(encrypted_ssn) rescue nil
       if !ssn_value.blank? && (ssn_value =~ /[0-9]{9}/)
-        pers.ssn = ssn_value
+        pers.set(encrypted_ssn: SymmetricEncryption.encrypt(ssn_value))
+        pers.reload
       end
     end
     pers.census_dependents.each do |ver|
