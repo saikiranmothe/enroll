@@ -27,6 +27,8 @@ class BenefitEligibilityElementGroup
       children_under_26
       disabled_children_26_and_over
       children_26_and_over
+      nephew_or_niece
+      grandchild
     )
 
 

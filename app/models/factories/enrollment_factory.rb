@@ -284,6 +284,10 @@ module Factories
         "life_partner"
       when "child_under_26", "child_26_and_over", "disabled_child_26_and_over"
         "child"
+      when "grandchild"
+        "grandchild"
+      when "nephew_or_niece"
+        "nephew_or_niece"
       end
     end
 
