@@ -1,8 +1,13 @@
 class Person
   include Mongoid::Document
-  include SetCurrentUser
   include Mongoid::Timestamps
-  include Mongoid::Versioning
+
+  include Mongoid::Userstamp
+  include Mongoid::History::Trackable
+  include AuditTrail
+  include EventPublisher
+
+  # include SetCurrentUser
 
   include Notify
   include UnsetableSparseFields
@@ -73,7 +78,7 @@ class Person
   embeds_one :consumer_role, cascade_callbacks: true, validate: true
   embeds_one :broker_role, cascade_callbacks: true, validate: true
   embeds_one :hbx_staff_role, cascade_callbacks: true, validate: true
-  embeds_one :responsible_party, cascade_callbacks: true, validate: true
+  # embeds_one :responsible_party, cascade_callbacks: true, validate: true
   embeds_one :csr_role, cascade_callbacks: true, validate: true
   embeds_one :assister_role, cascade_callbacks: true, validate: true
   embeds_one :inbox, as: :recipient
@@ -89,7 +94,7 @@ class Person
   embeds_many :emails, cascade_callbacks: true, validate: true
   embeds_many :documents, as: :documentable
 
-  accepts_nested_attributes_for :consumer_role, :responsible_party, :broker_role, :hbx_staff_role,
+  accepts_nested_attributes_for :consumer_role, :broker_role, :hbx_staff_role,
     :person_relationships, :employee_roles, :phones, :employer_staff_roles
 
   accepts_nested_attributes_for :phones, :reject_if => Proc.new { |addy| Phone.new(addy).blank? }

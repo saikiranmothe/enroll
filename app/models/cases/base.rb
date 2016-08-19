@@ -1,11 +1,111 @@
-class Cases::Base
-  include Mongoid::Document
-  include Mongoid::Timestamps
-  include Mongoid::History::Trackable
+module Cases::Base
 
+  def initialize
+  end
 
   # journal
 
+  PERSON                  = %W(identity citizen_status lawful_presence_status location role contact)
+  identity  = [
+                  { consumer_role: { 
+                        attributes: %w(first_name middle_name last_name name_pfx name_sfx ssn dob gender),
+                        scopes: %w(consumer_role),
+                        where: :any
+                      } 
+                    },
+                  { employee_role: %w(first_name middle_name last_name name_pfx name_sfx ssn dob gender) },
+                  { resident_role: %w(first_name middle_name last_name name_pfx name_sfx ssn dob gender) },
+                ]
+
+  citizen_status  = [
+                      { resident_role: %w(first_name middle_name last_name name_pfx name_sfx ssn dob gender) },
+                      ]              
+
+  demographic     = [
+                        { consumer_role: %w(first_name middle_name last_name name_pfx name_sfx ssn dob gender) },
+                      ]
+
+  location        = [
+                        { addresses: {
+                              %w(addresses), 
+                              scopes: [
+                                        { consumer_role.addresses.kind.in => ["home", "mailing"] },
+                                        { employee_role.addresses.kind.in => ["home", "mailing"] },
+                                        { resident_role.addresses.kind.in => ["home", "mailing"] },
+                                        { resident_role.addresses.kind.in => ["home", "mailing"] },
+                                        ]
+                              where: [
+                                consumer_role, kind: :home, ]
+                            }
+                          },
+                        { consumer_role: %w(addresses) },
+                        { employee_role: %w(addresses) },
+                        { resident_role: %w(addresses) },
+                      ]
+
+
+
+  lawful_presence_status  = {models: [
+                                {model: :person,
+                                  # tracker_class_name: :"journals/person_transaction",
+                                  attributes: %w()
+                                }
+                              ]}
+
+  location                = {models: [
+                                {model: :address, 
+                                  # tracker_class_name: :"journals/person_transaction",
+                                  kinds: [:home], 
+                                  attributes: %w(address_1 address_2 address_3 city state zip)}
+                              ]}
+
+  contact                 = {models: [
+                                {model: :person, 
+                                  # tracker_class_name: :"journals/person_transaction",
+                                  attributes: %w(addresses emails phones)} 
+                              ]}
+
+  role                    = {models: [
+                                {model: :person, 
+                                  # tracker_class_name: :"journals/person_transaction",
+                                  attributes: %w(consumer_role employee_roles employer_staff_roles 
+                                    broker_agency_staff_roles general_agency_Staff_roles csr_role hbx_staff_role assister_role)} 
+                              ]}
+
+  document                = {models: [
+                                {model: :person, 
+                                  # tracker_class_name: :"journals/person_transaction",
+                                  attributes: %w(documents)}
+                              ]}
+
+
+
+  FAMILY      = %w(special_enrollment_period household enrollment_period eligibility_determination ) # enrollment_period_kinds: sep, new_hire, cobra
+  special_enrollment_period =  {models: [
+                                  {model: :family,
+                                    # tracker_class_name: :"journals/family_transaction",
+                                    attributes: %w(special_enrollment_periods)}
+                                  ]}
+
+  household                 =  {models: [
+                                  {model: :family,
+                                    # tracker_class_name: :"journals/family_transaction",
+                                    attributes: %w(households)}
+                                  ]}
+
+
+  ENROLLMENT_ELIGBILITY = %w(unassisted_individual assisted_individual employer_sponsored )
+  BENEFIT_ENROLLMENT    = %w(initial maintenance auto_renewed renewed reinstated waived )
+
+
+  CASE_WORKER = %w()
+  HBX         = %w(open_enrollment_period settngs)
+  ACCOUNT     = %w()
+  EMPLOYER    = %w()
+  BROKER      = %w()
+
+  change_model
+  change_id
 
   # Eligibility/Assistance
   ## QLEs
@@ -152,10 +252,10 @@ class Cases::Base
   field :related_case_ids, type: Array, default: []
   field :related_crm_ids,  type: Array, default: []
 
-  field :attribute_list, type: Array, default: [] # used for tracking changes
-
+  field :history_attributes, type: Array, default: [] # used for tracking changes.
   # accepts_nested_attributes_for :"workflows/verification", :case_notes, :consumer_notes
 
-
+  def get_data
+  end
 
 end

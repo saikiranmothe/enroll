@@ -35,6 +35,7 @@ RSpec.describe AuditTrail, type: :model do
       it { expect(Mongoid::History.trackable_class_options[parent_klass_key][:modifier_field]).to eq modifier_field }
       it { expect(Mongoid::History.trackable_class_options[parent_klass_key][:changes_method]).to eq changes_method }
 
+      it { expect(parent_klass.tracked_fields).to include(last_name_key, first_name_key) }
       # it { expect(parent_klass.tracked_fields).to match_array(tracked_fields) }
     end
 
@@ -45,6 +46,8 @@ RSpec.describe AuditTrail, type: :model do
       it { expect(parent_instance.history_tracks.last.modified.keys).to include(first_name_key, last_name_key) }
       it { expect(parent_instance.history_tracks.last.modified[first_name_key]).to eq first_name } 
       it { expect(parent_instance.history_tracks.last.modified[last_name_key]).to eq last_name } 
+      it { expect(parent_instance.history_tracks.last.tracked_edits[:add]).to eq nil } 
+      it { expect(parent_instance.history_tracks.last.tracked_edits[:modify]).to eq nil } 
     end
 
     context "and emails, an embeds_many child instance, is created" do

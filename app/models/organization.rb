@@ -130,6 +130,40 @@ class Organization
       })
   }
 
+
+  # TODO: plan_year needs to be current
+  scope :all_employers,               ->{ exists(employer_profile: true) }
+  scope :employers_enrolling,         ->{ exists(employer_profile: true) }
+  scope :employers_renewing,          ->{ any_in(:"employer_profile.plan_years.aasm_state" => PlanYear::RENEWING) }
+
+  # scope :active_employers,            ->{ where(:"employer_profile.aasm_state".in => EmployerProfile::ACTIVE_STATES) }
+  # scope :inactive_employers,          ->{ where(:"employer_profile.aasm_state".in => EmployerProfile::INACTIVE_STATES) }
+
+  # scope :enrollment_eligible
+  # scope :open_enrollment,             ->{ where(:"employer_profile.plan_years.aasm_state" => "enrolling") }
+  # scope :binder_pending,              ->{ where(:"employer_profile.aasm_state" => "eligible") }
+  # scope :enrollment_ineligible
+
+  # scope :initial_application_approved,  ->{ where() }
+  # scope :initial_open_enrollment,       ->{ where() }
+  # scope :initial_application_eligible,  ->{ where() }
+
+  # scope :renewing_benefits
+  # scope :renewing_application_approved,   ->{ where() }
+  # scope :renewing_open_enrollment,        ->{ where() }
+  # scope :renewing_application_eligible,   ->{ where() }
+
+  # scope :enrolled,                ->{ where(:"employer_profile.aasm_state" => "enrolled") }
+
+  # scope :applicants,                  ->{ exists(employer_profile: true) }
+
+  # scope :renewing_application
+  # scope :renewing_application_approved
+  # scope :renewing_application
+  # scope :renewing_application
+
+
+
   def generate_hbx_id
     write_attribute(:hbx_id, HbxIdGenerator.generate_organization_id) if hbx_id.blank?
   end

@@ -2,7 +2,7 @@ class Address
   include Mongoid::Document
   include Mongoid::Timestamps
 
-  embedded_in :person
+  embedded_in :person, inverse_of: :addresses
   embedded_in :office_location
   embedded_in :census_member, class_name: "CensusMember"
 
