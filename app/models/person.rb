@@ -1,19 +1,16 @@
 class Person
   include Mongoid::Document
+  include SetCurrentUser
   include Mongoid::Timestamps
-  include Mongoid::Userstamp
-  include Mongoid::History::Trackable
-
-  include AuditTrail
-
-  # include SetCurrentUser
+  include Mongoid::Versioning
 
   include Notify
   include UnsetableSparseFields
   include FullStrippedNames
 
   extend Mongorder
-  validates_with Validations::DateRangeValidator
+#  validates_with Validations::DateRangeValidator
+
 
   GENDER_KINDS = %W(male female)
   IDENTIFYING_INFO_ATTRIBUTES = %w(first_name last_name ssn dob)
@@ -52,10 +49,8 @@ class Person
   field :no_dc_address, type: Boolean, default: false
   field :no_dc_address_reason, type: String, default: ""
 
-  field :created_by, type: String
-  field :updated_by, type: String
-
   field :is_active, type: Boolean, default: true
+  field :updated_by, type: String
   field :no_ssn, type: String #ConsumerRole TODO TODOJF
   # Login account
   belongs_to :user
@@ -104,7 +99,6 @@ class Person
   validates_presence_of :first_name, :last_name
   validate :date_functional_validations
   validate :no_changing_my_user, :on => :update
-  validate :is_ssn_composition_correct?
 
   validates :ssn,
     length: { minimum: 9, maximum: 9, message: "SSN must be 9 digits" },
@@ -113,15 +107,17 @@ class Person
 
   validates :encrypted_ssn, uniqueness: true, allow_blank: true
 
+  validate :is_ssn_composition_correct?
+
   validates :gender,
     allow_blank: true,
     inclusion: { in: Person::GENDER_KINDS, message: "%{value} is not a valid gender" }
 
-  before_save   :generate_hbx_id
-  before_save   :update_full_name
-  before_save   :strip_empty_fields
-  after_save    :generate_family_search
-  after_create  :create_inbox
+  before_save :generate_hbx_id
+  before_save :update_full_name
+  before_save :strip_empty_fields
+  after_save :generate_family_search
+  after_create :create_inbox
 
   index({hbx_id: 1}, {sparse:true, unique: true})
   index({user_id: 1}, {sparse:true, unique: true})
@@ -203,13 +199,9 @@ class Person
 
   validate :consumer_fields_validations
 
-  after_validation :move_encrypted_ssn_errors
   after_create :notify_created
   after_update :notify_updated
-  after_save :update_family_search_collection
-
-  delegate :citizen_status, :citizen_status=, :to => :consumer_role, :allow_nil => true
-
+  
   def notify_created
     notify(PERSON_CREATED_EVENT_NAME, {:individual_id => self.hbx_id } )
   end
@@ -227,11 +219,11 @@ class Person
     end
   end
 
-  def check_households(family)
+  def check_households family
     family.households.present? ? true : false
   end
 
-  def check_tax_households(family)
+  def check_tax_households family
     family.households.first.tax_households.present? ? true : false
   end
 
@@ -250,6 +242,9 @@ class Person
     end
   end
 
+  after_save :update_family_search_collection
+  after_validation :move_encrypted_ssn_errors
+
   def move_encrypted_ssn_errors
     deleted_messages = errors.delete(:encrypted_ssn)
     if !deleted_messages.blank?
@@ -259,6 +254,10 @@ class Person
     end
     true
   end
+
+  delegate :citizen_status, :citizen_status=, :to => :consumer_role, :allow_nil => true
+
+  delegate :ivl_coverage_selected, :to => :consumer_role, :allow_nil => true
 
   # before_save :notify_change
   # def notify_change
@@ -281,9 +280,20 @@ class Person
       unset_sparse("user_id")
     end
   end
-
   def ssn_changed?
     encrypted_ssn_changed?
+  end
+
+  def self.encrypt_ssn(val)
+    if val.blank?
+      return nil
+    end
+    ssn_val = val.to_s.gsub(/\D/, '')
+    SymmetricEncryption.encrypt(ssn_val)
+  end
+
+  def self.decrypt_ssn(val)
+    SymmetricEncryption.decrypt(val)
   end
 
   # Strip non-numeric chars from ssn
@@ -451,6 +461,11 @@ class Person
   def mobile_phone
     phones.detect { |phone| phone.kind == "mobile" }
   end
+  
+  def work_phone_or_best
+    best_phone  = work_phone || mobile_phone || home_phone
+    best_phone ? best_phone.full_phone_number : nil
+  end
 
   def has_active_consumer_role?
     consumer_role.present? and consumer_role.is_active?
@@ -458,6 +473,10 @@ class Person
 
   def has_active_employee_role?
     active_employee_roles.any?
+  end
+
+  def has_employer_benefits?
+    active_employee_roles.present? && active_employee_roles.first.benefit_group.present?
   end
 
   def active_employee_roles
@@ -505,18 +524,6 @@ class Person
           {"encrypted_ssn" => encrypt_ssn(s_rex)}
         ] + additional_exprs(clean_str))
       }
-    end
-
-    def encrypt_ssn(val)
-      if val.blank?
-        return nil
-      end
-      ssn_val = val.to_s.gsub(/\D/, '')
-      SymmetricEncryption.encrypt(ssn_val)
-    end
-
-    def decrypt_ssn(val)
-      SymmetricEncryption.decrypt(val)
     end
 
     def additional_exprs(clean_str)
@@ -765,7 +772,7 @@ class Person
     ::MapReduce::FamilySearchForPerson.populate_for(self)
   end
 
-private
+  private
   def is_ssn_composition_correct?
     # Invalid compositions:
     #   All zeros or 000, 666, 900-999 in the area numbers (first three digits);
