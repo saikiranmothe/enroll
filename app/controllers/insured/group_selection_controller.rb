@@ -157,6 +157,9 @@ class Insured::GroupSelectionController < ApplicationController
       @role = @consumer_role
     end
 
+    # find existing sep
+    @existing_sep = @family.special_enrollment_periods.where(:end_on.gte => Date.today).first
+
     @change_plan = params[:change_plan].present? ? params[:change_plan] : ''
     @coverage_kind = params[:coverage_kind].present? ? params[:coverage_kind] : 'health'
     @enrollment_kind = params[:enrollment_kind].present? ? params[:enrollment_kind] : ''
