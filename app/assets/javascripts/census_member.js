@@ -1,7 +1,7 @@
 var CensusMember = (function (window){
   function appendDependentQuestions(e){
   var option = $(e).closest("fieldset").find("#employee_relationship").val();
-   var dependent_list = [ "child" ,"nephew_or_niece", "grandchild"];
+   var dependent_list = [ "child","child_under_26","child_26_and_over" ,"nephew_or_niece", "grandchild"];
    // get age from DOB
    var dob = $(e).closest("fieldset").find(".dob-picker");
     if(dob != null && dob.val() != null){
