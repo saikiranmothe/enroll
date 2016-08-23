@@ -15,7 +15,7 @@ class Insured::FamilyMembersController < ApplicationController
     @change_plan = params[:change_plan].present? ? 'change_by_qle' : ''
     @change_plan_date = params[:qle_date].present? ? params[:qle_date] : ''
 
-    if params[:sep_id].present?
+    if params[:sep_id].present? && !params[:shop_for_plan]
       @sep = @family.special_enrollment_periods.find(params[:sep_id])
       @change_plan = 'change_by_qle'
       @change_plan_date = @sep.qle_on
