@@ -27,6 +27,8 @@ describe FindOrCreateInsuredPerson, :dbclean => :after_each do
         name_sfx: nil,
         ssn: nil,
         no_ssn: nil,
+        is_disabled: nil,
+        is_primary_caregiver: nil,
         dob: dob,
         gender: nil).and_return(new_person)
     end
