@@ -17,6 +17,7 @@ class BenefitGroup
     :child_under_26,
     :child_26_and_over_with_disability,
     :child_26_and_over,
+    :grandchild,
     :nephew_or_niece
   ]
 
@@ -146,6 +147,7 @@ class BenefitGroup
       new_date.end_of_month if terminate_on_kind == "end_of_month"
     end
   end
+
 
   # def set_bounding_cost_plans
   #   plans = Plan.shop_health_by_active_year(reference_plan.active_year).by_health_metal_levels([reference_plan.metal_level])
