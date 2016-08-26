@@ -1,11 +1,39 @@
-module Cases::Base
+class Cases::Base
+  include Mongoid::Document
 
-  def initialize
-  end
+  embeds_many :caseworker_notes, as: :commentable
+  embeds_many :customer_notes, as: :commentable
+  embeds_many :documents, as: :documentable
+
+  # Approval workflow
+  # Service ticket reference
+
+  PRIORITY_KINDS  = %w(low normal high urgent)
+  STATUS_KINDS    = %w(new assigned in_progress closed)
+
+  field :category, type: String   # Eligibility, Enrollment?  or Tracker?
+  field :assignee, type: String
+  field :priority, type: String
+  field :status, type: String
+  field :started_at, type: Time
+  field :closed_at, type: Time
+
+  # def self.included(base)
+  #   base.send(:field, :reason, :type => String)
+  # end
 
   # journal
 
   PERSON                  = %W(identity citizen_status lawful_presence_status location role contact)
+
+  # application detail - is person applying for coverage
+  # financial release - IRS up to 5 years
+  # physical vs tax HH
+  # documentation details for citizenship status
+  # external evidences -- federal hub responses
+  # notices and documents
+  # enrollments
+
   identity  = [
                   { consumer_role: { 
                         attributes: %w(first_name middle_name last_name name_pfx name_sfx ssn dob gender),
