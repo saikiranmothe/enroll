@@ -157,7 +157,7 @@ module Forms
 
     def extract_primary_person_params
       {
-        :is_primary_caregiver => is_primary_caregiver
+        # :is_primary_caregiver => is_primary_caregiver
       }
     end
 
@@ -180,7 +180,8 @@ module Forms
         :citizen_status => @citizen_status,
         :tribal_id => tribal_id,
         :no_dc_address => no_dc_address,
-        :no_dc_address_reason => no_dc_address_reason
+        :no_dc_address_reason => no_dc_address_reason,
+        :has_primary_caregiver => has_primary_caregiver
       }
     end
 

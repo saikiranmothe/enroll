@@ -74,7 +74,7 @@ class InsuredEligibleForBenefitRule
     return true if relation_ship_with_primary_applicant.nil?
 
     if ['child','nephew_or_niece', 'grandchild'].include?(relation_ship_with_primary_applicant)
-      if age >= 26 && @role.person.is_disabled?  || age < 26 && has_caregiver?
+      if age >= 26 && @role.person.is_disabled?  || age < 26 && role.person.has_primary_caregiver
         return true
       end
     end
@@ -163,9 +163,8 @@ class InsuredEligibleForBenefitRule
     primary_applicant.person.person_relationships.select {|r|r.relative_id.to_s == @role.person.id.to_s}.first.try(:kind) || nil
   end
 
-  def has_caregiver?
-    primary_applicant.person.is_primary_caregiver || nil
-  end
-
+  # def has_caregiver?
+  #   primary_applicant.person.has_primary_caregiver || nil
+  # end
 
 end

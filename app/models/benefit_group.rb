@@ -16,9 +16,9 @@ class BenefitGroup
     :domestic_partner,
     :child_under_26,
     :child_26_and_over_with_disability,
-    :child_26_and_over,
     :grandchild,
-    :nephew_or_niece
+    :nephew_or_niece,
+    :child_26_and_over
   ]
 
   field :title, type: String, default: ""

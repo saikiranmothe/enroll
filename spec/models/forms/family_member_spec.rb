@@ -229,6 +229,7 @@ describe Forms::FamilyMember, "which describes a new family member, and has been
       :language_code => "english",
       :is_incarcerated => "no",
       :is_disabled => nil,
+      :has_primary_caregiver => nil,
       :tribal_id => "test",
       :no_dc_address=>nil,
       :no_dc_address_reason=>nil
@@ -320,7 +321,8 @@ describe Forms::FamilyMember, "which describes an existing family member" do
       :language_code => "english",
       :is_incarcerated => "no",
       tribal_id: "test",
-      :is_disabled => nil
+      :is_disabled => nil,
+      :has_primary_caregiver => nil,
     }
   }
   let(:person) { double(:errors => double(:has_key? => false), home_address: nil) }
@@ -421,7 +423,7 @@ describe Forms::FamilyMember, "relationship validation" do
 
   context "child" do
     let(:person){FactoryGirl.create :person }
-    subject { Forms::FamilyMember.new(person_properties.merge({:family_id => family.id, :relationship => "child" , :is_primary_caregiver => true})) }
+    subject { Forms::FamilyMember.new(person_properties.merge({:family_id => family.id, :relationship => "child" , :has_primary_caregiver => true})) }
 
     it "should be valid" do
       allow(family_member).to receive(:relationship).and_return("child")
@@ -431,14 +433,14 @@ describe Forms::FamilyMember, "relationship validation" do
 
   context "grand child" do
     let(:person){FactoryGirl.create :person }
-    subject { Forms::FamilyMember.new(person_properties.merge({:family_id => family.id, :relationship => "grandchild" , :is_primary_caregiver => true})) }
+    subject { Forms::FamilyMember.new(person_properties.merge({:family_id => family.id, :relationship => "grandchild" , :has_primary_caregiver => true})) }
 
     it "should be valid" do
       allow(family_member).to receive(:relationship).and_return("grandchild")
       expect(subject.valid?).to be true
     end
 
-    it "should save is_primary_caregiver info to primary_applicant of grandchild" do
+    it "should save has_primary_caregiver info to grandchild" do
       allow(family_member).to receive(:relationship).and_return("grandchild")
       allow(subject).to receive_message_chain("family.primary_family_member.person").and_return(person)
       allow(subject).to receive(:relationship_validation).and_return(true)
@@ -448,13 +450,13 @@ describe Forms::FamilyMember, "relationship validation" do
       allow(subject.family).to receive(:relate_new_member).and_return(subject)
       allow(subject.family).to receive(:save!).and_return(true)
       subject.save
-      expect(person.is_primary_caregiver).to be true
+      expect(subject.has_primary_caregiver).to be true
     end
   end
   
   context "nephew_or_niece" do
     let(:person){FactoryGirl.create :person }
-    subject { Forms::FamilyMember.new(person_properties.merge({:family_id => family.id, :relationship => "nephew_or_niece" , :is_primary_caregiver => true})) }
+    subject { Forms::FamilyMember.new(person_properties.merge({:family_id => family.id, :relationship => "nephew_or_niece" , :has_primary_caregiver => true})) }
 
     it "should save dependent" do
       allow(subject).to receive(:relationship).and_return("nephew_or_niece")
