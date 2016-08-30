@@ -23,7 +23,7 @@ RSpec.describe Factories::CensusEmployeeFactory, type: :model, dbclean: :after_e
     end
   end
   
-  context "When Census Employe don't have benefit group assignment" do 
+  context "When ER offers both health and dental in a plan year" do 
     let(:calender_year) { TimeKeeper.date_of_record.year }
     let(:organization) { 
       org = FactoryGirl.create :organization, legal_name: "Corp 1" 
