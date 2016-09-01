@@ -6,8 +6,8 @@ module Parsers::Xml::Cv
     namespace 'ridp'
     tag 'employer_request'
 
-    element :header, Parsers::Xml::Cv::EmployerRequestHeaderParser::Type, tag: "header", :namespace => 'ridp'
-    element :request, Parsers::Xml::Cv::EmployerRequestRequestParser::Type, tag: "request", :namespace => 'ridp'
+    has_one :header, Parsers::Xml::Cv::EmployerRequestHeaderParser, tag: "header", :namespace => 'ridp'
+    has_one :request, Parsers::Xml::Cv::EmployerRequestRequestParser, tag: "request", :namespace => 'ridp'
 
     def to_hash
       {

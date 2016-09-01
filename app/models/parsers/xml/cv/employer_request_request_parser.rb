@@ -6,12 +6,12 @@ module Parsers::Xml::Cv
     tag 'request'
 
     element :request_name, String, tag: "request_name", :namespace => 'ridp'
-    element :parameters, Parsers::Xml::Cv::EmployerRequestParameterParser::Type, tag: "parameter", :namespace => 'ridp'
+    has_one :parameters, Parsers::Xml::Cv::EmployerRequestParametersParser, tag: "parameters", :namespace => 'ridp'
 
     def to_hash
       {
           request_name: request_name,
-          parameters: parameters.map(&:to_hash)
+          parameters: parameters.to_hash
       }
     end
   end

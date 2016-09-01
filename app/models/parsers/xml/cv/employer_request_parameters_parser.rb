@@ -1,9 +1,10 @@
 module Parsers::Xml::Cv
-  class EmployerRequestParameterParser
+  class EmployerRequestParametersParser
+
     include HappyMapper
     register_namespace 'ridp', 'http://openhbx.org/api/terms/1.0'
     namespace 'ridp'
-    tag 'parameter'
+    tag 'parameters'
 
     element :first_name, String, tag: "person_name/ridp:person_given_name", :namespace => 'ridp'
     element :last_name, String, tag: "person_name/ridp:person_surname", :namespace => 'ridp'

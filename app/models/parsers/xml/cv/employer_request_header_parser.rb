@@ -5,11 +5,10 @@ module Parsers::Xml::Cv
     namespace 'ridp'
     tag 'header'
 
-
-
     def to_hash
 
     end
+
   end
 end
 
