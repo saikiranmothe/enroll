@@ -9,8 +9,8 @@ describe Parsers::Xml::Cv::EmployerRequestParser do
     it 'should return the elements as a hash' do
       subject.parse(xml)
       expect(subject.to_hash).to include(:header, :request)
-      expect(subject.to_hash[:request][:parameters][:ssn]).to be('111111111')
-      expect(subject.to_hash[:request][:parameters][:dob]).to be('19900101')
+      expect(subject.to_hash[:request][:parameters][:ssn]).to eq('111111111')
+      expect(subject.to_hash[:request][:parameters][:dob]).to eq('19900101')
     end
   end
 end
