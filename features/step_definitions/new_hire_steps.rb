@@ -61,9 +61,12 @@ When(/(.*) clicks \"Shop for Plans\" on my account page/) do |named_person|
 end
 
 When(/(.*) clicks continue on the group selection page/) do |named_person|
+  sleep 1
+  wait_for_ajax
   if find_all('.interaction-click-control-continue').any?
     find('.interaction-click-control-continue').click
   else
+    wait_for_ajax
     find('.interaction-click-control-shop-for-new-plan', :wait => 10).click
   end
 end

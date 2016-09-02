@@ -411,7 +411,6 @@ When /^the ga2 visits their Employers page$/ do
 end
 
 Then /^the ga2 should not see the employer$/ do
-  sleep 1
   expect(page).not_to have_content('EmployerA Inc')
 end
 
